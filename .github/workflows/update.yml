@@ -1,37 +1,13 @@
-name: CI/CD
+name: Update
 on:
   push:
     paths:
-      - ansible/**
-      - tofu/**
-      - just/**
-      - scripts/**
-      - justfile
+      - assets/**
   pull_request:
     paths:
-      - ansible/**
-      - tofu/**
-      - just/**
-      - scripts/**
-      - justfile
+      - assets/**
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@main
-
-      - name: Setup Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
-
-      - name: Run tests
-        run: nix develop --command just test
-
-  deploy:
-    needs: [test]
+  apply:
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -55,6 +31,6 @@ jobs:
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
 
-      - name: Deploy
+      - name: Applyg
         run: |
-          nix develop --command just deploy
+          nix develop --command just ansible apply
