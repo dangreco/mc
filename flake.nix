@@ -45,6 +45,7 @@
                 git
                 act
                 just
+                moreutils
 
                 opentofu
                 tofu-ls
