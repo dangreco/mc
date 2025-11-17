@@ -1,9 +1,9 @@
 ---
 minecraft_version: latest
-minecraft_motd: Hello, World!
+minecraft_motd: "☃️ Bonhomme SMP ☃️\u00A7r\n🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿🏴󠁣󠁡󠁱󠁣󠁿"
 minecraft_difficulty: normal
-minecraft_whitelist_file: ""
-minecraft_icon: ""
+minecraft_whitelist_file: "https://raw.githubusercontent.com/dangreco/mc/refs/heads/main/assets/whitelist.txt"
+minecraft_icon: "https://raw.githubusercontent.com/dangreco/mc/refs/heads/main/assets/server-icon.png"
 minecraft_enable_query: "TRUE"
 minecraft_seed: "-123456792079414942"
 minecraft_game_mode: survival

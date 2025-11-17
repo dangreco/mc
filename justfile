@@ -20,3 +20,8 @@ ssh:
     ip=$(just tofu _get_ip_v4)
 
     ssh -i "$tmp/id_ed25519" root@"$ip"
+
+deploy:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    ./scripts/deploy.sh

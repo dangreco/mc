@@ -89,8 +89,31 @@ resource "cloudflare_dns_record" "this" {
   zone_id = var.cloudflare_zone_id
   name    = "mc.${data.cloudflare_zone.this.name}"
   type    = "A"
-  content = vultr_reserved_ip.this.subnet
   ttl     = 300
+
+  content = vultr_reserved_ip.this.subnet
   proxied = false
+
+  comment = "Managed by OpenTofu"
+}
+
+resource "cloudflare_dns_record" "srv" {
+  zone_id  = var.cloudflare_zone_id
+  name     = "_minecraft._tcp.mc.${data.cloudflare_zone.this.name}"
+  type     = "SRV"
+  ttl      = 300
+  priority = 0
+  proxied  = false
+
+  data = {
+    proto    = "_tcp"
+    name     = "mc.${data.cloudflare_zone.this.name}"
+    service  = "minecraft"
+    target   = "mc.${data.cloudflare_zone.this.name}"
+    port     = 25565
+    priority = 0
+    weight   = 5
+  }
+
   comment = "Managed by OpenTofu"
 }
