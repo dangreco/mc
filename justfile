@@ -11,6 +11,8 @@ ssh:
     tmp=$(mktemp -d)
     trap "rm -rf $tmp" EXIT SIGINT SIGTERM
 
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
+
     # Get SSH key
     key=$(just tofu _get_ssh_key)
     echo "$key" > "$tmp/id_ed25519"
@@ -24,10 +26,12 @@ ssh:
 deploy:
     #!/usr/bin/env bash
     set -euo pipefail
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     ./scripts/deploy.sh
 
 test:
     #!/usr/bin/env bash
     set -euo pipefail
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     just tofu test
     just ansible test

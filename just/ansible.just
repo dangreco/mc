@@ -11,6 +11,8 @@ ping:
     tmp=$(mktemp -d)
     trap "rm -rf $tmp" EXIT SIGINT SIGTERM
 
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
+
     # Get SSH key
     key=$(just tofu _get_ssh_key)
     echo "$key" > "$tmp/id_ed25519"
@@ -26,6 +28,8 @@ apply:
     set -euo pipefail
     tmp=$(mktemp -d)
     trap "rm -rf $tmp" EXIT SIGINT SIGTERM
+
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
 
     # Get SSH key
     key=$(just tofu _get_ssh_key)
@@ -43,6 +47,8 @@ apply:
 test:
     #!/usr/bin/env bash
     set -euo pipefail
+
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
 
     # Install requirements
     ansible-galaxy install -r ../ansible/requirements.yml

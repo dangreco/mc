@@ -9,25 +9,27 @@ default:
 _output key exp:
     #!/usr/bin/env bash
     set -euo pipefail
-    source "{{root}}/.env"
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     tofu -chdir="{{root}}/tofu" output --json "{{key}}" | jq -r  "{{exp}}"
 
 [private]
 _get_ip_v4:
     #!/usr/bin/env bash
     set -euo pipefail
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     just tofu _output "ip" ".subnet"
 
 [private]
 _get_ssh_key:
     #!/usr/bin/env bash
     set -euo pipefail
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     just tofu _output "tls_private_key" ".private_key_openssh"
 
 init:
     #!/usr/bin/env bash
     set -euo pipefail
-    source "{{root}}/.env"
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     tofu -chdir="{{root}}/tofu" init \
         -backend-config="bucket=$S3_BUCKET" \
         -backend-config="region=$S3_REGION" \
@@ -36,13 +38,13 @@ init:
 plan:
     #!/usr/bin/env bash
     set -euo pipefail
-    source "{{root}}/.env" || true
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     tofu -chdir="{{root}}/tofu" plan -out=tfplan
 
 apply:
     #!/usr/bin/env bash
     set -euo pipefail
-    source "{{root}}/.env" || true
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     tofu -chdir="{{root}}/tofu" apply -auto-approve tfplan
 
 destroy:
@@ -54,7 +56,6 @@ destroy:
 test:
     #!/usr/bin/env bash
     set -euo pipefail
-    source "{{root}}/.env" || true
-
+    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     just tofu init
     tofu -chdir="{{root}}/tofu" validate
