@@ -1,0 +1,40 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: "{{ common_apt_update_cache_valid_time }}"
+  register: common_apt_cache_update
+  retries: 3
+  delay: 10
+  until: common_apt_cache_update is success
+
+- name: Upgrade all packages
+  ansible.builtin.apt:
+    upgrade: "{{ common_apt_upgrade_type }}"
+    autoremove: "{{ common_apt_auto_remove }}"
+    autoclean: "{{ common_apt_auto_clean }}"
+  when: common_apt_upgrade_type != "none"
+  register: common_apt_upgrade_result
+  retries: 3
+  delay: 10
+  until: common_apt_upgrade_result is success
+
+- name: Install common packages
+  ansible.builtin.apt:
+    name: "{{ common_apt_packages }}"
+    state: present
+    update_cache: no
+  register: apt_install_result
+  retries: 3
+  delay: 10
+  until: apt_install_result is success
+
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: common_reboot_required_file
+
+- name: Notify if reboot is required
+  ansible.builtin.debug:
+    msg: "⚠️  Reboot required on {{ inventory_hostname }}"
+  when: common_reboot_required_file.stat.exists

@@ -1,0 +1,13 @@
+---
+common_apt_update_cache_valid_time: 3600
+common_apt_upgrade_type: "dist"
+common_apt_auto_remove: true
+common_apt_auto_clean: true
+common_apt_packages:
+  - vim
+  - git
+  - curl
+  - wget
+  - htop
+  - unzip
+  - tar

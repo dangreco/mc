@@ -1,0 +1,18 @@
+---
+- name: Common setup
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Docker setup
+  hosts: all
+  become: true
+  roles:
+    - role: geerlingguy.docker
+
+- name: Minecraft setup
+  hosts: all
+  become: true
+  roles:
+    - minecraft
