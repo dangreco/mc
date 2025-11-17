@@ -1,3 +1,5 @@
+root := `git rev-parse --show-toplevel`
+
 mod tofu "just/tofu.just"
 mod ansible "just/ansible.just"
 
