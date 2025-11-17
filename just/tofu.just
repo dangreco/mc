@@ -9,7 +9,7 @@ default:
 _output key exp:
     #!/usr/bin/env bash
     set -euo pipefail
-    just tofu init
+    just tofu init &> /dev/null
     [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     tofu -chdir="{{root}}/tofu" output --json "{{key}}" | jq -r  "{{exp}}"
 
