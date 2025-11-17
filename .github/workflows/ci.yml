@@ -2,11 +2,17 @@ name: CI/CD
 on:
   push:
     paths:
-      - src/**
+      - ansible/**
+      - tofu/**
+      - assets/**
+      - just/**
       - scripts/**
   pull_request:
     paths:
-      - src/**
+      - ansible/**
+      - tofu/**
+      - assets/**
+      - just/**
       - scripts/**
 jobs:
   test:
