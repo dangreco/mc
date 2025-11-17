@@ -39,3 +39,13 @@ apply:
     ansible-playbook ../ansible/site.yml \
         --inventory "../ansible/inventory.yml" \
         --private-key "$tmp/id_ed25519"
+
+test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Install requirements
+    ansible-galaxy install -r ../ansible/requirements.yml
+
+    # Run site.yml
+    ansible-playbook ../ansible/site.yml --syntax-check

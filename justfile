@@ -25,3 +25,9 @@ deploy:
     #!/usr/bin/env bash
     set -euo pipefail
     ./scripts/deploy.sh
+
+test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just tofu test
+    just ansible test

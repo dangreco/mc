@@ -50,3 +50,11 @@ destroy:
     set -euo pipefail
     source "{{root}}/.env" || true
     tofu -chdir="{{root}}/tofu" destroy -auto-approve
+
+test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source "{{root}}/.env" || true
+
+    just tofu init
+    tofu -chdir="{{root}}/tofu" validate
