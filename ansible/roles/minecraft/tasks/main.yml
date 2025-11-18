@@ -1,0 +1,98 @@
+---
+- name: Include apt update tasks
+  ansible.builtin.include_tasks: apt.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - apt
+    - system
+    - updates
+
+- name: Add crafty user
+  ansible.builtin.user:
+    state: present
+    name: crafty
+    shell: /bin/bash
+
+- name: Create crafty directory
+  ansible.builtin.file:
+    state: directory
+    path: /var/opt/minecraft/crafty
+    owner: crafty
+    group: crafty
+    mode: 0755
+
+- name: Create server directory
+  ansible.builtin.file:
+    state: directory
+    path: /var/opt/minecraft/server
+    owner: crafty
+    group: crafty
+    mode: 0755
+
+- name: Clone crafty repo
+  become_user: crafty
+  ansible.builtin.git:
+    repo: "https://gitlab.com/crafty-controller/crafty-4.git"
+    dest: /var/opt/minecraft/crafty/crafty-4
+    clone: true
+    depth: 1
+
+- name: Create python venv
+  become_user: crafty
+  ansible.builtin.command:
+    cmd: python3 -m venv /var/opt/minecraft/crafty/.venv
+    creates: /var/opt/minecraft/crafty/.venv/bin/python3
+
+- name: Install crafty dependencies
+  become_user: crafty
+  ansible.builtin.pip:
+    virtualenv: /var/opt/minecraft/crafty/.venv
+    virtualenv_command: python3 -m venv /var/opt/minecraft/crafty/.venv
+    requirements: /var/opt/minecraft/crafty/crafty-4/requirements.txt
+    extra_args: --no-cache-dir
+
+- name: Create Crafty systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/crafty.service
+    content: |
+      [Unit]
+      Description=Crafty Controller
+      After=network.target
+
+      [Service]
+      Type=simple
+      User=crafty
+      WorkingDirectory=/var/opt/minecraft/crafty/crafty-4
+      ExecStart=/var/opt/minecraft/crafty/.venv/bin/python3 main.py -d
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable and start Crafty service
+  ansible.builtin.systemd:
+    name: crafty
+    enabled: yes
+    state: started
+
+- name: Ensure UFW is installed
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+
+- name: Allow Crafty HTTPS port 8443
+  ansible.builtin.ufw:
+    rule: allow
+    port: 8443
+    proto: tcp
+
+- name: Allow Minecraft port 25565
+  ansible.builtin.ufw:
+    rule: allow
+    port: 25565
+    proto: tcp
+
+- name: Enable UFW firewall
+  ansible.builtin.ufw:
+    state: enabled

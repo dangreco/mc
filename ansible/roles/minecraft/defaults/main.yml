@@ -1,0 +1,8 @@
+---
+minecraft_apt_update_cache_valid_time: 3600
+minecraft_apt_packages:
+  - python3
+  - python3-dev
+  - python3-pip
+  - python3-venv
+  - software-properties-common

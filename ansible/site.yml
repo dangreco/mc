@@ -5,8 +5,14 @@
   roles:
     - common
 
-- name: Docker setup
+- name: Java setup
   hosts: all
   become: true
   roles:
-    - role: geerlingguy.docker
+    - java
+
+- name: Minecraft setup
+  hosts: all
+  become: true
+  roles:
+    - minecraft

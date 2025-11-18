@@ -46,6 +46,7 @@
                 act
                 just
                 moreutils
+                netcat-gnu
 
                 opentofu
                 tofu-ls

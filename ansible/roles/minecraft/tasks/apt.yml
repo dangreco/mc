@@ -1,0 +1,29 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: "{{ minecraft_apt_update_cache_valid_time }}"
+  register: minecraft_apt_cache_update
+  retries: 3
+  delay: 10
+  until: minecraft_apt_cache_update is success
+
+- name: Install minecraft packages
+  ansible.builtin.apt:
+    name: "{{ minecraft_apt_packages }}"
+    state: present
+    update_cache: no
+  register: minecraft_apt_install_result
+  retries: 3
+  delay: 10
+  until: minecraft_apt_install_result is success
+
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: minecraft_reboot_required_file
+
+- name: Notify if reboot is required
+  ansible.builtin.debug:
+    msg: "⚠️  Reboot required on {{ inventory_hostname }}"
+  when: minecraft_reboot_required_file.stat.exists

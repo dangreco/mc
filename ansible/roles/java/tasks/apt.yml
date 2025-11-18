@@ -1,0 +1,59 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: "{{ java_apt_update_cache_valid_time }}"
+  register: java_apt_cache_update
+  retries: 3
+  delay: 10
+  until: java_apt_cache_update is success
+
+- name: Install common packages
+  ansible.builtin.apt:
+    name: "{{ java_apt_packages }}"
+    state: present
+    update_cache: no
+  register: java_apt_install_result
+  retries: 3
+  delay: 10
+  until: java_apt_install_result is success
+
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: java_reboot_required_file
+
+- name: Notify if reboot is required
+  ansible.builtin.debug:
+    msg: "⚠️  Reboot required on {{ inventory_hostname }}"
+  when: java_reboot_required_file.stat.exists
+
+- name: Add Adoptium GPG key
+  ansible.builtin.apt_key:
+    url: https://packages.adoptium.net/artifactory/api/gpg/key/public
+    keyring: /usr/share/keyrings/adoptium.gpg
+    state: present
+
+- name: Add Adoptium APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb {{ ansible_distribution_release }} main"
+    filename: adoptium
+    state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  register: java_apt_cache_update_2
+  retries: 3
+  delay: 10
+  until: java_apt_cache_update_2 is success
+
+- name: Install JDK
+  ansible.builtin.apt:
+    name: temurin-21-jdk
+    state: present
+    update_cache: no
+  register: java_apt_jdk_install_result
+  retries: 3
+  delay: 10
+  until: java_apt_jdk_install_result is success

@@ -10,7 +10,7 @@ resource "vultr_ssh_key" "my_ssh_key" {
 data "vultr_os" "this" {
   filter {
     name   = "name"
-    values = ["Debian 13 x64 (trixie)"]
+    values = ["Debian 12 x64 (bookworm)"]
   }
 }
 
