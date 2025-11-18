@@ -4,16 +4,11 @@ on:
     paths:
       - ansible/**
       - tofu/**
-      - just/**
-      - scripts/**
-      - justfile
   pull_request:
     paths:
       - ansible/**
       - tofu/**
-      - just/**
-      - scripts/**
-      - justfile
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest

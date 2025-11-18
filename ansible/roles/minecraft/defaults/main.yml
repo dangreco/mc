@@ -1,9 +1,0 @@
----
-minecraft_version: latest
-minecraft_motd: "§b☃ §f§lBonhomme SMP§b ☃§r\n§7§oL’hiver est arrivé pour de bon!"
-minecraft_difficulty: normal
-minecraft_whitelist_file: "https://raw.githubusercontent.com/dangreco/mc/refs/heads/main/assets/whitelist.json"
-minecraft_icon: "https://raw.githubusercontent.com/dangreco/mc/refs/heads/main/assets/server-icon.png"
-minecraft_enable_query: "TRUE"
-minecraft_seed: "-123456792079414942"
-minecraft_game_mode: survival

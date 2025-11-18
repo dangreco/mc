@@ -37,9 +37,3 @@ test:
     [ -f "{{root}}/.env" ] && source "{{root}}/.env"
     just tofu test
     just ansible test
-
-whitelist *args:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    [ -f "{{root}}/.env" ] && source "{{root}}/.env"
-    ./scripts/whitelist.sh {{args}}
