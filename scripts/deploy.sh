@@ -7,7 +7,6 @@ cleanup() {
 trap cleanup EXIT SIGINT SIGTERM
 
 # Apply OpenTofu configuration
-task tofu:init
 task tofu:plan PLAN="$TMP/plan"
 task tofu:apply PLAN="$TMP/plan"
 

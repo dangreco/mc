@@ -9,20 +9,38 @@ tasks:
     cmds:
       - task -t tasks/ansible.yml --list
 
-  ping:
-    desc: Ping all Ansible hosts
+  init:
+    desc: Initialize Ansible
     silent: true
+    sources:
+      - ansible/requirements.yml
     cmds:
-      - scripts/ansible/ping.sh
+      - ansible-galaxy install -r ansible/requirements.yml
 
   apply:
     desc: Apply Ansible playbooks
     silent: true
+    deps:
+      - init
+    sources:
+      - ansible/**/*.yml
+      - ansible/**/*.j2
     cmds:
       - sops exec-file --output-type json secrets.yml "scripts/ansible/apply.sh {}"
 
   test:
     desc: Test Ansible playbooks syntax
     silent: true
+    deps:
+      - init
+    sources:
+      - ansible/**/*.yml
+      - ansible/**/*.j2
     cmds:
       - scripts/ansible/test.sh
+
+  ping:
+    desc: Ping all Ansible hosts
+    silent: true
+    cmds:
+      - scripts/ansible/ping.sh

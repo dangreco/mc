@@ -12,30 +12,50 @@ tasks:
   init:
     desc: Initialize OpenTofu
     silent: true
+    sources:
+      - tofu/*.tf
+    generates:
+      - tofu/.terraform
     cmds:
       - sops exec-file --output-type json secrets.yml "scripts/tofu/init.sh {}"
 
   plan:
     desc: Plan OpenTofu
     silent: true
+    deps:
+      - init
+    sources:
+      - tofu/*.tf
     cmds:
       - sops exec-file --output-type json secrets.yml "scripts/tofu/plan.sh {} {{ .PLAN | default "" }}"
 
   apply:
     desc: Apply OpenTofu
     silent: true
+    deps:
+      - init
+    sources:
+      - tofu/*.tf
     cmds:
       - sops exec-file --output-type json secrets.yml "scripts/tofu/apply.sh {} {{ .PLAN | default "" }}"
 
   destroy:
     desc: Destroy OpenTofu
     silent: true
+    deps:
+      - init
+    sources:
+      - tofu/*.tf
     cmds:
       - sops exec-file --output-type json secrets.yml "scripts/tofu/destroy.sh {}"
 
   test:
     desc: Test OpenTofu
     silent: true
+    deps:
+      - init
+    sources:
+      - tofu/*.tf
     cmds:
       - tofu -chdir=tofu validate
 

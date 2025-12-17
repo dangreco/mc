@@ -19,9 +19,6 @@ PRIVATE_KEY_FILE="$TMP/idid_ed25519"
 echo "$PRIVATE_KEY" > "$PRIVATE_KEY_FILE"
 chmod 600 "$PRIVATE_KEY_FILE"
 
-# Install requirements
-ansible-galaxy install -r ansible/requirements.yml
-
 # Run site.yml
 ansible-playbook ansible/site.yml \
     --inventory ansible/inventory.yml \
