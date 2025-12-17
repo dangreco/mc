@@ -12,8 +12,6 @@ tasks:
   init:
     desc: Initialize Ansible
     silent: true
-    sources:
-      - ansible/requirements.yml
     cmds:
       - ansible-galaxy install -r ansible/requirements.yml
 
@@ -22,9 +20,6 @@ tasks:
     silent: true
     deps:
       - init
-    sources:
-      - ansible/**/*.yml
-      - ansible/**/*.j2
     cmds:
       - sops exec-file --output-type json secrets.yml "scripts/ansible/apply.sh {}"
 
@@ -33,9 +28,6 @@ tasks:
     silent: true
     deps:
       - init
-    sources:
-      - ansible/**/*.yml
-      - ansible/**/*.j2
     cmds:
       - scripts/ansible/test.sh
 

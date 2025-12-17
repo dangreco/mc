@@ -1,0 +1,59 @@
+---
+- name: Include apt update and upgrade tasks
+  ansible.builtin.include_tasks: apt.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - apt
+    - system
+    - updates
+
+- name: Set up systemd service for system-bridge
+  ansible.builtin.template:
+    src: templates/system-bridge.service.j2
+    dest: "/etc/systemd/system/system-bridge.service"
+    mode: "0644"
+  register: system_bridge_service_template
+  tags:
+    - system_bridge
+    - services
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: system_bridge_service_template is changed
+  tags:
+    - system_bridge
+    - services
+
+- name: Enable and start system-bridge service
+  ansible.builtin.systemd:
+    name: "system-bridge.service"
+    enabled: true
+    state: started
+  tags:
+    - system_bridge
+    - services
+
+- name: Get port bound to 0.0.0.0 from system-bridge logs
+  ansible.builtin.shell: |
+    journalctl -u system-bridge.service --no-pager \
+    | grep '0.0.0.0' \
+    | sed -n 's/.*0\.0\.0\.0:\([0-9]\+\).*/\1/p' \
+    | tail -n 1
+  register: system_bridge_port
+  changed_when: false
+
+- name: Ensure port was detected
+  ansible.builtin.fail:
+    msg: "No port bound to 0.0.0.0 found in system-bridge logs"
+  when: system_bridge_port.stdout == ""
+
+- name: Allow system-bridge port
+  ansible.builtin.ufw:
+    rule: allow
+    port: "{{ system_bridge_port.stdout }}"
+    proto: tcp
+
+- name: Enable UFW firewall
+  ansible.builtin.ufw:
+    state: enabled

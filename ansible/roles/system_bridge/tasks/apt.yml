@@ -1,0 +1,37 @@
+---
+- name: Check if system-bridge is installed
+  command: dpkg-query -W system-bridge
+  register: system_bridge_check
+  failed_when: system_bridge_check.rc > 1
+  changed_when: system_bridge_check.rc == 1
+
+- name: Create temporary download directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: system_bridge
+  register: system_bridge_tmp
+  when: system_bridge_check.rc == 1
+
+- name: Download system-bridge package
+  ansible.builtin.get_url:
+    url: "https://github.com/timmo001/system-bridge/releases/download/{{ system_bridge_version }}/system-bridge_{{ system_bridge_version }}_amd64.deb"
+    dest: "{{ system_bridge_tmp.path }}/system-bridge_{{ system_bridge_version }}_amd64.deb"
+    checksum: "{{ system_bridge_checksum }}"
+  when: system_bridge_check.rc == 1
+
+- name: Install system-bridge package
+  ansible.builtin.apt:
+    deb: "{{ system_bridge_tmp.path }}/system-bridge_{{ system_bridge_version }}_amd64.deb"
+  when: system_bridge_check.rc == 1
+
+- name: Clean up temporary download directory
+  ansible.builtin.file:
+    path: "{{ system_bridge_tmp.path }}"
+    state: absent
+  when: system_bridge_tmp.path is defined
+
+- name: Ensure UFW is installed
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes

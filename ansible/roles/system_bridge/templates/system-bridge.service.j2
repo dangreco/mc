@@ -1,0 +1,14 @@
+[Unit]
+Description=System Bridge Backend Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/system-bridge backend
+Restart=on-failure
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
