@@ -1,18 +1,47 @@
 ---
-- name: Common setup
-  hosts: all
-  become: true
-  roles:
-    - common
+# - name: Common setup
+#   hosts: all
+#   become: true
+#   roles:
+#     - common
 
-- name: Java setup
-  hosts: all
-  become: true
-  roles:
-    - java
+# - name: Java setup
+#   hosts: all
+#   become: true
+#   roles:
+#     - java
 
-- name: Minecraft setup
+# - name: Minecraft setup
+#   hosts: all
+#   become: true
+#   roles:
+#     - minecraft
+
+# - name: rclone setup
+#   hosts: all
+#   become: true
+#   roles:
+#     - role: stefangweichinger.ansible_rclone
+#       rclone_configs:
+#         - name: b2
+#           properties:
+#             type: b2
+#             account: "{{ secrets.b2.application_key_id }}"
+#             key: "{{ secrets.b2.application_key }}"
+#             hard_delete: true
+#       rclone_mounts:
+#         - name: b2
+#           remote_name: b2
+#           remote_path: "/{{ secrets.b2.bucket }}/backups"
+#           local_path: "/mnt/b2"
+#           local_path_mode: 0755
+#           local_path_owner: crafty
+#           local_path_group: crafty
+#           auto_mount: true
+#           extra_args: "--allow-other"
+
+- name: lsyncd setup
   hosts: all
   become: true
   roles:
-    - minecraft
+    - lsyncd

@@ -44,13 +44,17 @@
                 jq
                 git
                 act
-                just
+                pinact
                 moreutils
                 netcat-gnu
 
                 opentofu
                 tofu-ls
                 ansible
+
+                sops
+                age
+                go-task
               ];
 
               shellHook = ''

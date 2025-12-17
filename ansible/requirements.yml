@@ -1,1 +1,2 @@
-[]
+- name: stefangweichinger.ansible_rclone
+  version: 0.2.4

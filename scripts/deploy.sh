@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-just tofu init
-just tofu plan && just tofu apply
+TMP=$(mktemp -d)
+cleanup() {
+    rm -rf "$TMP"
+}
+trap cleanup EXIT SIGINT SIGTERM
 
-# Wait for host
-ip=$(just tofu _get_ip_v4)
-while ! nc -z $ip 22; do sleep 1; done
+# Apply OpenTofu configuration
+task tofu:init
+task tofu:plan PLAN="$TMP/plan"
+task tofu:apply PLAN="$TMP/plan"
 
-# Add ssh key to known hosts
-ip=$(just tofu _get_ip_v4)
+# Wait for SSH to be available on remote
+IP=$(task tofu:output PATTERN=.ip.value.subnet)
+while ! nc -z $IP 22; do sleep 1; done
+
+# Add SSH key to known hosts
 mkdir -p ~/.ssh
-ssh-keyscan -H "$ip" >> ~/.ssh/known_hosts
+ssh-keyscan -H "$IP" >> ~/.ssh/known_hosts
 
-just ansible apply
+# Run Ansible playbook
+task ansible:apply

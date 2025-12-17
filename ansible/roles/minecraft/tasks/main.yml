@@ -12,6 +12,7 @@
     state: present
     name: crafty
     shell: /bin/bash
+    create_home: yes
 
 - name: Create crafty directory
   ansible.builtin.file:

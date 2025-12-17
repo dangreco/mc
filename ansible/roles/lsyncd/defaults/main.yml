@@ -1,0 +1,4 @@
+---
+lsyncd_apt_update_cache_valid_time: 3600
+lsyncd_apt_packages:
+  - lsyncd

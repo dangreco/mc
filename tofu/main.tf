@@ -82,11 +82,11 @@ resource "local_sensitive_file" "inventory" {
 }
 
 data "cloudflare_zone" "this" {
-  zone_id = var.cloudflare_zone_id
+  zone_id = local.secrets.cloudflare.zone_id
 }
 
 resource "cloudflare_dns_record" "this" {
-  zone_id = var.cloudflare_zone_id
+  zone_id = local.secrets.cloudflare.zone_id
   name    = "mc.${data.cloudflare_zone.this.name}"
   type    = "A"
   ttl     = 300
@@ -98,7 +98,7 @@ resource "cloudflare_dns_record" "this" {
 }
 
 resource "cloudflare_dns_record" "srv" {
-  zone_id  = var.cloudflare_zone_id
+  zone_id  = local.secrets.cloudflare.zone_id
   name     = "_minecraft._tcp.mc.${data.cloudflare_zone.this.name}"
   type     = "SRV"
   ttl      = 300

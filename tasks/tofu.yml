@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  default:
+    desc: List tasks
+    silent: true
+    cmds:
+      - task -t tasks/tofu.yml --list
+
+  init:
+    desc: Initialize OpenTofu
+    silent: true
+    cmds:
+      - sops exec-file --output-type json secrets.yml "scripts/tofu/init.sh {}"
+
+  plan:
+    desc: Plan OpenTofu
+    silent: true
+    cmds:
+      - sops exec-file --output-type json secrets.yml "scripts/tofu/plan.sh {} {{ .PLAN | default "" }}"
+
+  apply:
+    desc: Apply OpenTofu
+    silent: true
+    cmds:
+      - sops exec-file --output-type json secrets.yml "scripts/tofu/apply.sh {} {{ .PLAN | default "" }}"
+
+  destroy:
+    desc: Destroy OpenTofu
+    silent: true
+    cmds:
+      - sops exec-file --output-type json secrets.yml "scripts/tofu/destroy.sh {}"
+
+  test:
+    desc: Test OpenTofu
+    silent: true
+    cmds:
+      - tofu -chdir=tofu validate
+
+  output:
+    desc: Get OpenTofu output
+    silent: true
+    cmds:
+      - sops exec-file --output-type json secrets.yml "scripts/tofu/outputs.sh {} | jq -r {{ .PATTERN | default "." }}"

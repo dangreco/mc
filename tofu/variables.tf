@@ -1,4 +1,4 @@
-variable "cloudflare_zone_id" {
+variable "secrets" {
   type      = string
   sensitive = true
 }

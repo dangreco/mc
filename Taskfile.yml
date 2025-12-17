@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+includes:
+  tofu: tasks/tofu.yml
+  ansible: tasks/ansible.yml
+
+tasks:
+  default:
+    desc: List tasks
+    silent: true
+    cmds:
+      - task --list
+
+  ssh:
+    desc: SSH into server
+    silent: true
+    cmds:
+      - ./scripts/ssh.sh
+
+  test:
+    desc: Run all tests
+    silent: true
+    deps:
+      - tofu:test
+      - ansible:test
+
+  deploy:
+    desc: Deploy to server
+    silent: true
+    cmds:
+      - ./scripts/deploy.sh

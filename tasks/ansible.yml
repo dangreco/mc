@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  default:
+    desc: List tasks
+    silent: true
+    cmds:
+      - task -t tasks/ansible.yml --list
+
+  ping:
+    desc: Ping all Ansible hosts
+    silent: true
+    cmds:
+      - scripts/ansible/ping.sh
+
+  apply:
+    desc: Apply Ansible playbooks
+    silent: true
+    cmds:
+      - sops exec-file --output-type json secrets.yml "scripts/ansible/apply.sh {}"
+
+  test:
+    desc: Test Ansible playbooks syntax
+    silent: true
+    cmds:
+      - scripts/ansible/test.sh

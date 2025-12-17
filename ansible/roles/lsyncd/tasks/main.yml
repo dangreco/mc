@@ -1,0 +1,41 @@
+---
+- name: Include apt update and upgrade tasks
+  ansible.builtin.include_tasks: apt.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - apt
+    - system
+    - updates
+
+- name: Set up systemd service for lsyncd targets
+  ansible.builtin.template:
+    src: templates/lsyncd.service.j2
+    dest: "/etc/systemd/system/lsyncd@{{ item }}.service"
+    mode: "0644"
+  loop:
+    - full
+    - snapshot
+  register: lsyncd_service_template
+  tags:
+    - lsyncd
+    - services
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: lsyncd_service_template is changed
+  tags:
+    - lsyncd
+    - services
+
+- name: Enable and start lsyncd services
+  ansible.builtin.systemd:
+    name: "lsyncd@{{ item }}.service"
+    enabled: true
+    state: started
+  loop:
+    - full
+    - snapshot
+  tags:
+    - lsyncd
+    - services

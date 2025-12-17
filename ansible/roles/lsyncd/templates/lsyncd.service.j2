@@ -1,0 +1,16 @@
+[Unit]
+Description=lsyncd Service for %i
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=/mnt/b2
+After=rclone-mount@b2.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/lsyncd -nodaemon -rsync /var/opt/minecraft/backups/%i/ /mnt/b2/%i
+Restart=on-failure
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
